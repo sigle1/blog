@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.PostMapper">
+    <resultMap id="PostMap" type="com.example.demo.entity.Post">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="category" property="category"/>
+        <result column="summary" property="summary"/>
+        <result column="content" property="content"/>
+        <result column="cover_title" property="coverImage"/>
+        <result column="cover_color" property="coverColor"/>
+        <result column="tags" property="tags" typeHandler="com.example.demo.handler.StringToListTypeHandler"/>
+        <result column="views" property="views"/>
+        <result column="likes" property="likes"/>
+        <result column="comment_count" property="comments"/>
+        <result column="created_at" property="createdAt"/>
+    </resultMap>
+    
+    <select id="selectAll" resultMap="PostMap">
+        SELECT p.*,
+               (SELECT COUNT(1) FROM post_comments pc WHERE pc.post_id = p.id) AS comment_count
+        FROM posts p
+        ORDER BY p.created_at DESC
+    </select>
+    
+    <select id="selectById" resultMap="PostMap">
+        SELECT p.*,
+               (SELECT COUNT(1) FROM post_comments pc WHERE pc.post_id = p.id) AS comment_count
+        FROM posts p
+        WHERE p.id = #{id}
+    </select>
+    
+    <insert id="insert" parameterType="com.example.demo.entity.Post" useGeneratedKeys="true" keyProperty="post.id">
+        INSERT INTO posts (title, category, summary, content, cover_title, cover_color, tags, views, likes, created_at)
+        VALUES (#{post.title}, #{post.category}, #{post.summary}, #{post.content}, #{post.coverImage}, #{post.coverColor}, #{post.tags, typeHandler=com.example.demo.handler.StringToListTypeHandler}, #{post.views}, #{post.likes}, #{post.createdAt})
+    </insert>
+    
+    <update id="update" parameterType="com.example.demo.entity.Post">
+        UPDATE posts SET
+            title = #{post.title},
+            category = #{post.category},
+            summary = #{post.summary},
+            content = #{post.content},
+            cover_title = #{post.coverImage},
+            cover_color = #{post.coverColor},
+            tags = #{post.tags, typeHandler=com.example.demo.handler.StringToListTypeHandler}
+        WHERE id = #{post.id}
+    </update>
+    
+    <delete id="delete" parameterType="java.lang.Long">
+        DELETE FROM posts WHERE id = #{id}
+    </delete>
+
+    <update id="updateViews">
+        UPDATE posts SET views = views + 1 WHERE id = #{id}
+    </update>
+</mapper>

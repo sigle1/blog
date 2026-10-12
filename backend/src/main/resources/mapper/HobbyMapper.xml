@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.HobbyMapper">
+    <select id="selectAll" resultType="com.example.demo.entity.Hobby">
+        SELECT * FROM hobbies
+    </select>
+    <select id="selectById" resultType="com.example.demo.entity.Hobby">
+        SELECT * FROM hobbies WHERE id = #{id}
+    </select>
+    <insert id="insert" parameterType="com.example.demo.entity.Hobby" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO hobbies (name, description, cover_url, created_at)
+        VALUES (#{name}, #{description}, #{coverUrl}, #{createdAt})
+    </insert>
+    <update id="update" parameterType="com.example.demo.entity.Hobby">
+        UPDATE hobbies SET name=#{name}, description=#{description}, cover_url=#{coverUrl}, created_at=#{createdAt}
+        WHERE id=#{id}
+    </update>
+    <delete id="deleteById">
+        DELETE FROM hobbies WHERE id=#{id}
+    </delete>
+</mapper>
+

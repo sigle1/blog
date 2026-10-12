@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.GuestMessageMapper">
+    <resultMap id="GuestMessageMap" type="com.example.demo.entity.GuestMessage">
+        <id column="id" property="id"/>
+        <result column="nickname" property="nickname"/>
+        <result column="content" property="content"/>
+        <result column="likes" property="likes"/>
+        <result column="favorites" property="favorites"/>
+        <result column="comment_count" property="commentCount"/>
+        <result column="created_at" property="createdAt"/>
+    </resultMap>
+
+    <sql id="GuestMessageColumns">
+        gm.id, gm.nickname, gm.content, gm.likes, gm.favorites, gm.created_at,
+        (SELECT COUNT(1) FROM message_comments mc WHERE mc.message_id = gm.id) AS comment_count
+    </sql>
+
+    <sql id="GuestMessageColumnsLegacy">
+        gm.id, gm.nickname, gm.content, gm.created_at,
+        0 AS likes, 0 AS favorites, 0 AS comment_count
+    </sql>
+
+    <select id="selectAll" resultMap="GuestMessageMap">
+        SELECT <include refid="GuestMessageColumns"/>
+        FROM guest_messages gm
+        ORDER BY gm.created_at DESC
+    </select>
+
+    <select id="selectAllLegacy" resultMap="GuestMessageMap">
+        SELECT <include refid="GuestMessageColumnsLegacy"/>
+        FROM guest_messages gm
+        ORDER BY gm.created_at DESC
+    </select>
+
+    <select id="selectById" resultMap="GuestMessageMap">
+        SELECT <include refid="GuestMessageColumns"/>
+        FROM guest_messages gm
+        WHERE gm.id = #{id}
+    </select>
+
+    <select id="selectByIdLegacy" resultMap="GuestMessageMap">
+        SELECT <include refid="GuestMessageColumnsLegacy"/>
+        FROM guest_messages gm
+        WHERE gm.id = #{id}
+    </select>
+
+    <sql id="AdminWhere">
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (gm.nickname LIKE CONCAT('%', #{keyword}, '%') OR gm.content LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+    </sql>
+
+    <update id="incrementLikes">
+        UPDATE guest_messages SET likes = likes + 1 WHERE id = #{id}
+    </update>
+
+    <update id="incrementFavorites">
+        UPDATE guest_messages SET favorites = favorites + 1 WHERE id = #{id}
+    </update>
+
+    <select id="selectAdmin" resultMap="GuestMessageMap">
+        SELECT <include refid="GuestMessageColumns"/>
+        FROM guest_messages gm
+        <include refid="AdminWhere"/>
+        ORDER BY gm.created_at DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="selectAdminLegacy" resultMap="GuestMessageMap">
+        SELECT <include refid="GuestMessageColumnsLegacy"/>
+        FROM guest_messages gm
+        <include refid="AdminWhere"/>
+        ORDER BY gm.created_at DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="countAdmin" resultType="long">
+        SELECT COUNT(1)
+        FROM guest_messages gm
+        <include refid="AdminWhere"/>
+    </select>
+
+    <insert id="insert" parameterType="com.example.demo.entity.GuestMessage" useGeneratedKeys="true" keyProperty="message.id">
+        INSERT INTO guest_messages (nickname, content, likes, favorites, created_at)
+        VALUES (#{message.nickname}, #{message.content}, #{message.likes}, #{message.favorites}, #{message.createdAt})
+    </insert>
+
+    <insert id="insertLegacy" parameterType="com.example.demo.entity.GuestMessage" useGeneratedKeys="true" keyProperty="message.id">
+        INSERT INTO guest_messages (nickname, content, created_at)
+        VALUES (#{message.nickname}, #{message.content}, #{message.createdAt})
+    </insert>
+
+    <delete id="deleteById">
+        DELETE FROM guest_messages WHERE id = #{id}
+    </delete>
+</mapper>

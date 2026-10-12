@@ -1,0 +1,19 @@
+# 单元测试：不依赖本机 MySQL、Redis
+spring:
+  datasource:
+    url: jdbc:h2:mem:blogtest;MODE=MySQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+  ai:
+    openai:
+      api-key: test-placeholder-key
+      chat:
+        api-key: test-placeholder-key
+
+app:
+  jwt-secret: test-only-secret-for-unit-tests-32-bytes

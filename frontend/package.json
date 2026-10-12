@@ -1,0 +1,38 @@
+{
+  "name": "vite-project",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 5173 --force",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --fix",
+    "typecheck": "vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "@ant-design/icons-vue": "^7.0.1",
+    "@element-plus/icons-vue": "^2.3.2",
+    "@vueup/vue-quill": "^1.2.0",
+    "ant-design-vue": "^4.0.7",
+    "axios": "^1.6.1",
+    "dayjs": "^1.11.10",
+    "element-plus": "^2.13.7",
+    "marked": "^14.1.0",
+    "pinia": "^2.1.7",
+    "vue": "^3.5.12",
+    "vue-i18n": "^9.6.5",
+    "vue-router": "^4.2.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.1.4",
+    "antdv-component-resolver": "^1.0.4",
+    "less": "^4.2.0",
+    "typescript": "^5.2.2",
+    "unocss": "^0.56.5",
+    "unplugin-auto-import": "^0.16.7",
+    "unplugin-vue-components": "^0.25.2",
+    "vite": "^5.4.10",
+    "vue-tsc": "^1.8.22"
+  }
+}

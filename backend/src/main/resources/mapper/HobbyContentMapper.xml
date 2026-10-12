@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.HobbyContentMapper">
+    <insert id="insert" parameterType="com.example.demo.entity.HobbyContent">
+        INSERT INTO hobby_content (hobby_id, content, created_at)
+        VALUES (#{content.hobbyId}, #{content.content}, #{content.createdAt})
+    </insert>
+
+    <select id="selectByHobbyId" resultType="com.example.demo.entity.HobbyContent">
+        SELECT
+            id,
+            hobby_id AS hobbyId,
+            content,
+            created_at AS createdAt
+        FROM hobby_content
+        WHERE hobby_id = #{hobbyId}
+        ORDER BY created_at DESC
+    </select>
+</mapper>

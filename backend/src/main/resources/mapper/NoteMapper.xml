@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.NoteMapper">
+    <select id="selectAll" resultType="com.example.demo.entity.Note">
+        SELECT * FROM notes
+    </select>
+    <select id="selectById" resultType="com.example.demo.entity.Note">
+        SELECT * FROM notes WHERE id = #{id}
+    </select>
+    <insert id="insert" parameterType="com.example.demo.entity.Note" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO notes (title, content, created_at)
+        VALUES (#{title}, #{content}, #{createdAt})
+    </insert>
+    <update id="update" parameterType="com.example.demo.entity.Note">
+        UPDATE notes SET title=#{title}, content=#{content}, created_at=#{createdAt}
+        WHERE id=#{id}
+    </update>
+    <delete id="deleteById">
+        DELETE FROM notes WHERE id=#{id}
+    </delete>
+</mapper>
+

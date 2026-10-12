@@ -1,0 +1,14 @@
+node_modules/
+target/
+dist/
+uploads/
+.env
+.env.*
+!.env.example
+application-local.*
+.idea/
+.claude/
+.cursor/
+*.log
+*.iml
+vite.config.*.timestamp-*

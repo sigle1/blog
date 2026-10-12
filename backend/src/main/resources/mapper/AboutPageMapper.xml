@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.AboutPageMapper">
+
+    <resultMap id="AboutPageMap" type="com.example.demo.entity.AboutPageSettings">
+        <id column="id" property="id"/>
+        <result column="intro" property="intro"/>
+    </resultMap>
+
+    <select id="selectSingleton" resultMap="AboutPageMap">
+        SELECT id, intro
+        FROM about_page_settings
+        WHERE id = 1
+    </select>
+
+    <insert id="upsert">
+        INSERT INTO about_page_settings (id, intro)
+        VALUES (1, #{row.intro})
+        ON DUPLICATE KEY UPDATE
+            intro = VALUES(intro)
+    </insert>
+</mapper>

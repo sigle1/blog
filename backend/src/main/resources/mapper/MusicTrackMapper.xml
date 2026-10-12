@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.MusicTrackMapper">
+
+    <resultMap id="MusicTrackMap" type="com.example.demo.entity.MusicTrack">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="artist" property="artist"/>
+        <result column="file_path" property="filePath"/>
+        <result column="cover_url" property="coverUrl"/>
+        <result column="lrc_path" property="lrcPath"/>
+        <result column="sort_order" property="sortOrder"/>
+        <result column="created_at" property="createdAt"/>
+    </resultMap>
+
+    <select id="selectAllOrdered" resultMap="MusicTrackMap">
+        SELECT * FROM site_music_track
+        ORDER BY sort_order ASC, id ASC
+    </select>
+
+    <select id="selectById" resultMap="MusicTrackMap">
+        SELECT * FROM site_music_track WHERE id = #{id}
+    </select>
+
+    <select id="selectNextSortOrder" resultType="int">
+        SELECT COALESCE(MAX(sort_order), 0) + 1 FROM site_music_track
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="track.id">
+        INSERT INTO site_music_track (title, artist, file_path, cover_url, lrc_path, sort_order, created_at)
+        VALUES (#{track.title}, #{track.artist}, #{track.filePath}, #{track.coverUrl}, #{track.lrcPath}, #{track.sortOrder}, #{track.createdAt})
+    </insert>
+
+    <insert id="insertLegacy" useGeneratedKeys="true" keyProperty="track.id">
+        INSERT INTO site_music_track (title, artist, file_path, sort_order, created_at)
+        VALUES (#{track.title}, #{track.artist}, #{track.filePath}, #{track.sortOrder}, #{track.createdAt})
+    </insert>
+
+    <update id="update">
+        UPDATE site_music_track
+        SET title = #{track.title},
+            artist = #{track.artist},
+            cover_url = #{track.coverUrl},
+            lrc_path = #{track.lrcPath}
+        WHERE id = #{track.id}
+    </update>
+
+    <update id="updateSortOrder">
+        UPDATE site_music_track SET sort_order = #{sortOrder} WHERE id = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM site_music_track WHERE id = #{id}
+    </delete>
+</mapper>

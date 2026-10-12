@@ -1,0 +1,72 @@
+server:
+  port: 8080
+  address: 0.0.0.0
+  error:
+    # 便于排查 500（如缺列 Unknown column）；上线若需隐藏可把 include-message 改为 never
+    include-message: always
+
+spring:
+  application:
+    name: blog
+  datasource:
+      url: ${DB_URL}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      password: ${REDIS_PASSWORD:}
+      port: ${REDIS_PORT:6379}
+      lettuce:
+        pool:
+          max-active: 10
+          max-idle: 10
+          min-idle: 1
+          time-between-eviction-runs: 10s
+  jackson:
+    default-property-inclusion: non_null
+  servlet:
+    multipart:
+      max-file-size: 130MB
+      max-request-size: 130MB
+  ai:
+    openai:
+      base-url: ${AI_BASE_URL:https://api.openai.com}
+      # 二选一设置环境变量即可；须非空，否则 Spring AI 启动会报错
+      # Windows CMD: set DASHSCOPE_API_KEY=sk-xxx
+      # PowerShell: $env:DASHSCOPE_API_KEY="sk-xxx"
+      api-key: ${DASHSCOPE_API_KEY:${OPENAI_API_KEY:}}
+      chat:
+        # 与 spring.ai.openai.api-key 同源，满足部分版本对 chat.api-key 的校验
+        api-key: ${DASHSCOPE_API_KEY:${OPENAI_API_KEY:}}
+        options:
+          model: ${AI_MODEL}
+          temperature: 0.8 # 模型温度，值越大输出越随机
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.example.demo.entity
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    com.blog: debug
+
+app:
+  jwt-secret: ${JWT_SECRET}
+  # 上传目录由 APP_UPLOAD_DIR 配置。
+  upload-dir: ${APP_UPLOAD_DIR:uploads}
+  qq:
+    enabled: ${QQ_ENABLED:false}
+    app-id: ${QQ_APP_ID:}
+    app-key: ${QQ_APP_KEY:}
+    redirect-uri: ${QQ_REDIRECT_URI:http://localhost:8080/auth/qq/callback}
+    frontend-success-url: ${QQ_FRONTEND_SUCCESS:http://localhost:5173/admin/login}
+    frontend-error-url: ${QQ_FRONTEND_ERROR:http://localhost:5173/admin/login}
+    # 允许登录管理后台的 QQ openid，多个用英文逗号分隔；首次可在后端日志里看到被拒绝的 openid
+    admin-openids: ${QQ_ADMIN_OPENIDS:}
+  ai:
+    # 服务端临时记忆窗口条数（仅 conversationId 模式；进程内，重启丢失）
+    chat-memory-max-messages: 20
